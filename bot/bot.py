@@ -1,10 +1,19 @@
+import random
 import telebot
 from bot_logic import gen_pass
+from telebot.types import ReactionTypeEmoji
 
 
-# Замени 'TOKEN' на токен твоего бота
-# Этот токен ты получаешь от BotFather, чтобы бот мог работать
+
+
+API_TOKEN = '8473665011:AAEAjIJmNp4-79ielfqwBxarrbQgZzFxBVY'
 bot = telebot.TeleBot("8473665011:AAEAjIJmNp4-79ielfqwBxarrbQgZzFxBVY")
+
+bot.message_handler(commands=['help'])  
+def handle_help(message):  
+    help_text = ("/start — Начать работу с ботом\n" "/help — Получить список команд\n")  
+    bot.send_message(message.chat.id, help_text)  
+
 
 text_messages = {
     'welcome':
@@ -55,12 +64,17 @@ def send_password(message):
     password = gen_pass(10)  # Устанавливаем длину пароля, например, 10 символов
     bot.reply_to(message, f"Вот твой сгенерированный пароль: {password}")
 
+
+
 @bot.message_handler(commands=['info'])
 def on_info(message):
     bot.reply_to(message, text_messages['info'])
 
 
-
+@bot.message_handler(func=lambda message: True)
+def send_reaction(message):
+    emo = ["\U0001F525", "\U0001F917", "\U0001F60E"]  # or use ["🔥", "🤗", "😎"]
+    bot.set_message_reaction(message.chat.id, message.id, [ReactionTypeEmoji(random.choice(emo))], is_big=False)
 
 
 
